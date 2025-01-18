@@ -55,25 +55,25 @@ This project is organized into several core components, each focusing on distinc
 ## Setup
 
 An Arduino-based sensor suite is securely mounted on the side of each laundry machine, as shown below:
-![Installation Arduino](./report/arduino_setup_final.webp)
+![Installation Arduino](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/arduino_setup_final.webp)
 
 The ESP32-S3-CAM is installed at an angle facing the machines for real-time user detection and data capture:
-![Installation ESP32](./report/esp32_setup_final.webp)
+![Installation ESP32](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/esp32_setup_final.webp)
 
 Positioned in front of each laundry unit, these modules detect user presence to refine machine status. Cameras capture frames and transmit presence data via HTTP POST requests to an AWS Lambda function (postCameraImageJSONFunction), which updates machine availability when user interaction is detected. This additional presence layer strengthens the reliability of the status display.
 
 An MQTT broker is deployed to streamline communication between the Arduino, ESP32, and AWS cloud services, with source code in the [task detection folder](./task_detection/) and AWS configurations in the [aws folder](./aws/).
 
 This project includes a web interface hosted on Vercel, as shown below:
-![Interface](./report/aws_interface.webp)
+![Interface](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/aws_interface.webp)
 The frontend queries a Lambda function (fetchMachineStatusFunction) every five minutes via HTTP GET requests to deliver real-time availability, ensuring status accuracy for all users.
 
 Communication among the system components is depicted here:
-![Communication](./report/aws_flowchart.webp)
+![Communication](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/aws_flowchart.webp)
 All data is routed using MQTT to optimize resource utilization and enable frequent device updates. The ESP32 devices capture and preprocess sensor data, sending it to the broker for object detection. A Python script determines machine states based on the updated information, which is then published to AWS IoT Core. The application’s backend periodically pulls these statuses, displaying them on the frontend.
 
 Below is the overall system architecture:
-![System Archi](./report/aws_architecture.webp)
+![System Archi](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/aws_architecture.webp)
 This scalable AWS-based infrastructure merges IoT hardware, cloud services, and machine learning models to offer real-time status monitoring and predictive insights. AWS IoT Core, Lambda, and DynamoDB handle data ingestion, computation, and storage. By adopting a pay-as-you-go model, AWS ensures efficiency and seamless scaling, while Terraform compatibility simplifies resource management and deployment consistency.
 
 ## Results
@@ -82,13 +82,13 @@ This scalable AWS-based infrastructure merges IoT hardware, cloud services, and 
 #### Washer Patterns
 Additional IMU sensor data did not reveal distinct patterns for individual washing stages (wash, rinse, spin). Instead, readings mainly identified the washer’s spinning phase, which appears during the last ten minutes of each cycle. As shown in the graphs, only accelerometer and gyroscope magnitudes exhibit noticeable changes in that final period.
 
-![Washer Acce](./report/arduino_data_acceleration_washer.webp)  
-![Washer Gyro](./report/arduino_data_gyro.webp)
+![Washer Acce](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/arduino_data_acceleration_washer.webp)  
+![Washer Gyro](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/arduino_data_gyro.webp)
 
 #### Dryer Patterns
 Dryer sensor data indicated a clear trend for usage detection during spinning. The recorded acceleration values reliably signaled whether the dryer was active.  
 
-![Dryer Acce](./report/arduino_data_acceleration_dryer.webp)
+![Dryer Acce](https://raw.githubusercontent.com/CheahHaoYi/DLLM_IoT/refs/heads/main/report/arduino_data_acceleration_dryer.webp)
 
 The machine learning (ML) pipeline begins by labeling washer data as either “spinning” or “not spinning” and dryer data as “in use” or “not in use.” Data cleaning removes null values and outliers. Additional features, including accelerometer and gyroscope magnitudes, address varying IMU angles during manual installation. Models trained on acceleration alone showed comparable ~90% accuracy to multi-sensor inputs, so acceleration-based predictions were ultimately chosen.
 
@@ -102,9 +102,9 @@ An MQTT broker runs an open-source YOLOv7-based pose detection model (https://gi
 
 During testing, YOLO occasionally produced false positives, indicating human poses where no person was present. The images below illustrate both an incorrect detection and a correctly identified pose:
 
-![Image bad](./task_detection/images_output/example_bad_output.jpg)
+![Image bad](https://github.com/CheahHaoYi/DLLM_IoT/blob/main/task_detection/images_output/example_bad_output.jpg?raw=true)
 
-![Image good](./task_detection/images_output/example_good_output.jpg)
+![Image good](https://github.com/CheahHaoYi/DLLM_IoT/blob/main/task_detection/images_output/example_good_output.jpg?raw=true)
 
 To improve detection of actual loading and unloading activities, an additional model identifies whether a person is bending and facing a machine. This model also differentiates between washers and dryers to accurately capture when users are placing or removing laundry.
 
